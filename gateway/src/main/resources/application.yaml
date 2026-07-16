@@ -12,14 +12,105 @@ spring:
       server:
         webflux:
           routes:
-            - id: user-service
-              uri: http://localhost:8081
+            # 1. Method predicate — GET only
+            - id: user-get
+              order: 1
+              uri: ${services.user}
               predicates:
-                - Path=/users/**
+                - Path=/users/hello
+                - Method=GET
 
-            - id: order-service
-              uri: http://localhost:8082
+            # 1. Method predicate — POST only
+            - id: user-post
+              order: 1
+              uri: ${services.user}
+              predicates:
+                - Path=/users
+                - Method=POST
+
+            # Basic order route — GET /orders/**
+            - id: order-get
+              order: 1
+              uri: ${services.order}
               predicates:
                 - Path=/orders/**
+                - Method=GET
+
+            # 2. Header predicate — requires X-Version: v2
+            - id: user-v2
+              order: 2
+              uri: ${services.user}
+              predicates:
+                - Path=/api/v2/users/**
+                - Header=X-Version, v2
+              filters:
+                - StripPrefix=2
+
+            # 3. Query predicate — /users/search?tier=premium
+            - id: user-premium
+              order: 0
+              uri: ${services.user}
+              predicates:
+                - Path=/users/search
+                - Query=tier, premium
+                - Method=GET
+
+            # 4. RewritePath — /api/users/** → /users/**
+            - id: user-rewrite
+              order: 3
+              uri: ${services.user}
+              predicates:
+                - Path=/api/users/**
+              filters:
+                - RewritePath=/api/users/(?<segment>.*), /users/${segment}
+
+            # 5. StripPrefix — /api/orders/** → /orders/**
+            - id: order-strip
+              order: 1
+              uri: ${services.order}
+              predicates:
+                - Path=/api/orders/**
+              filters:
+                - StripPrefix=1
+
+            # 6. Route order — catch-all for user-service (highest order = lowest priority)
+#            - id: user-catch-all
+#              order: 100
+#              uri: ${services.order}
+#              predicates:
+#                - Path=/**
+
+            # 7. Combined predicates — POST + Header X-Priority: high
+            - id: order-combined
+              order: 0
+              uri: ${services.order}
+              predicates:
+                - Path=/orders/**
+                - Method=POST
+                - Header=X-Priority, high
+
 server:
   port: ${SERVER_PORT:8080}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info
+
+services:
+  user: ${USER_SERVICE_URL:http://localhost:8081}
+  order: ${ORDER_SERVICE_URL:http://localhost:8082}
+
+logging:
+  level:
+    root: INFO
+    org.springframework.cloud.gateway: DEBUG
+
+gateway:
+  security:
+    jwt-secret: change-me
+  rate-limit:
+    enabled: false
+  cache:
+    enabled: false
