@@ -1,15 +1,25 @@
 spring:
   application:
     name: aegis_gateway
-  datasource:
-    url: jdbc:postgresql://localhost:5432/aegis_gateway
-    username: postgres
-    password: 123
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
+  r2dbc:
+    url: ${DB_URL:r2dbc:postgresql://localhost:5432/aegis_gateway}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:123}
     properties:
-      hibernate:
-        format_sql: true
+      driverClassName: org.postgresql.r2dbc.postgresql.R2dbcPostgreSQLDriver
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: http://localhost:8081
+              predicates:
+                - Path=/users/**
+
+            - id: order-service
+              uri: http://localhost:8082
+              predicates:
+                - Path=/orders/**
+server:
+  port: ${SERVER_PORT:8080}
