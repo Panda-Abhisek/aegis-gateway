@@ -198,19 +198,19 @@ Client receives response
 
 ## Technology Stack
 
-| Component | Technology |
-|-----------|------------|
-| Language | Java 21 |
-| Framework | Spring Boot 3 |
+| Component | Technology           |
+|-----------|----------------------|
+| Language | Java 25              |
+| Framework | Spring Boot 4        |
 | Gateway | Spring Cloud Gateway |
-| Security | Spring Security |
-| Cache | Redis |
-| Database | PostgreSQL |
-| Build Tool | Maven |
-| Containerization | Docker |
-| Monitoring | Prometheus |
-| Dashboard | Grafana |
-| Testing | JUnit |
+| Security | Spring Security      |
+| Cache | Redis                |
+| Database | PostgreSQL           |
+| Build Tool | Maven                |
+| Containerization | Docker               |
+| Monitoring | Prometheus           |
+| Dashboard | Grafana              |
+| Testing | JUnit                |
 
 ---
 
