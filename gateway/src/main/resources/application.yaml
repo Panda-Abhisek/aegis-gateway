@@ -62,7 +62,7 @@ spring:
               predicates:
                 - Path=/api/users/**
               filters:
-                - RewritePath=/api/users/(?<segment>.*), /users/${segment}
+                - RewritePath=/api/users/(?<segment>.*), /users/$\{segment}
 
             # 5. StripPrefix — /api/orders/** → /orders/**
             - id: order-strip
