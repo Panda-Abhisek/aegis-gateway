@@ -109,7 +109,10 @@ logging:
 
 gateway:
   security:
-    jwt-secret: change-me
+    jwt-secret: ;oiajsd;oirlawelkdjadnfalsdfjawhero23nr23r0hn34trjp4t;nfguq34tbrgu
+    api-keys:
+      - client-key-1
+      - client-key-2
   rate-limit:
     enabled: false
   cache:
