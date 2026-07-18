@@ -3,10 +3,12 @@ package com.aegis.security;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
+import java.util.List;
 
 @Component
 public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManager {
@@ -25,7 +27,11 @@ public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManage
         }
         String apiKey = credentials.toString();
         if (apiKeyProperties.isValid(apiKey)) {
-            return Mono.just(new UsernamePasswordAuthenticationToken(apiKey, null, Collections.emptyList()));
+            String role = apiKeyProperties.getRoleForKey(apiKey);
+            List<SimpleGrantedAuthority> authorities = role != null
+                    ? List.of(new SimpleGrantedAuthority(role))
+                    : Collections.emptyList();
+            return Mono.just(new UsernamePasswordAuthenticationToken(apiKey, null, authorities));
         }
         return Mono.empty();
     }
