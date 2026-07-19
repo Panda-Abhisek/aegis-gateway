@@ -1,6 +1,8 @@
 spring:
   application:
     name: aegis_gateway
+  codec:
+    max-in-memory-size: 1MB
   r2dbc:
     url: ${DB_URL:r2dbc:postgresql://localhost:5432/aegis_gateway}
     username: ${DB_USERNAME:postgres}
@@ -109,7 +111,17 @@ logging:
 
 gateway:
   security:
-    jwt-secret: change-me
+    jwt-secret: ;oiajsd;oirlawelkdjadnfalsdfjawhero23nr23r0hn34trjp4t;nfguq34tbrgu
+    api-keys:
+      - key: admin-key
+        role: ROLE_ADMIN
+      - key: user-key
+        role: ROLE_USER
+  validation:
+    max-payload-size: 1048576
+    required-headers: []
+    allowed-content-types:
+      - application/json
   rate-limit:
     enabled: false
   cache:
