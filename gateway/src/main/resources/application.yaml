@@ -1,6 +1,6 @@
 spring:
   application:
-    name: aegis_gateway
+    name: aegis-gateway
   codec:
     max-in-memory-size: 1MB
   r2dbc:
@@ -9,87 +9,37 @@ spring:
     password: ${DB_PASSWORD:123}
     properties:
       driverClassName: org.postgresql.r2dbc.postgresql.R2dbcPostgreSQLDriver
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
   cloud:
     gateway:
       server:
         webflux:
           routes:
-            # 1. Method predicate — GET only
-            - id: user-get
-              order: 1
+            - id: user-service
               uri: ${services.user}
               predicates:
-                - Path=/users/hello
-                - Method=GET
+                - Path=/users/**
 
-            # 1. Method predicate — POST only
-            - id: user-post
-              order: 1
-              uri: ${services.user}
-              predicates:
-                - Path=/users
-                - Method=POST
-
-            # Basic order route — GET /orders/**
-            - id: order-get
-              order: 1
-              uri: ${services.order}
-              predicates:
-                - Path=/orders/**
-                - Method=GET
-
-            # 2. Header predicate — requires X-Version: v2
-            - id: user-v2
-              order: 2
-              uri: ${services.user}
-              predicates:
-                - Path=/api/v2/users/**
-                - Header=X-Version, v2
-              filters:
-                - StripPrefix=2
-
-            # 3. Query predicate — /users/search?tier=premium
-            - id: user-premium
-              order: 0
-              uri: ${services.user}
-              predicates:
-                - Path=/users/search
-                - Query=tier, premium
-                - Method=GET
-
-            # 4. RewritePath — /api/users/** → /users/**
-            - id: user-rewrite
-              order: 3
+            - id: user-strip
               uri: ${services.user}
               predicates:
                 - Path=/api/users/**
               filters:
-                - RewritePath=/api/users/(?<segment>.*), /users/$\{segment}
+                - StripPrefix=1
 
-            # 5. StripPrefix — /api/orders/** → /orders/**
+            - id: order-service
+              uri: ${services.order}
+              predicates:
+                - Path=/orders/**
+
             - id: order-strip
-              order: 1
               uri: ${services.order}
               predicates:
                 - Path=/api/orders/**
               filters:
                 - StripPrefix=1
-
-            # 6. Route order — catch-all for user-service (highest order = lowest priority)
-#            - id: user-catch-all
-#              order: 100
-#              uri: ${services.order}
-#              predicates:
-#                - Path=/**
-
-            # 7. Combined predicates — POST + Header X-Priority: high
-            - id: order-combined
-              order: 0
-              uri: ${services.order}
-              predicates:
-                - Path=/orders/**
-                - Method=POST
-                - Header=X-Priority, high
 
 server:
   port: ${SERVER_PORT:8080}
@@ -122,7 +72,5 @@ gateway:
     required-headers: []
     allowed-content-types:
       - application/json
-  rate-limit:
-    enabled: false
   cache:
-    enabled: false
+    enabled: ${RATE_LIMIT_ENABLED:false}

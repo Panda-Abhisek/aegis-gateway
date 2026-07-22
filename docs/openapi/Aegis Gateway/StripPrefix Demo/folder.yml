@@ -1,0 +1,7 @@
+info:
+  name: StripPrefix Demo
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

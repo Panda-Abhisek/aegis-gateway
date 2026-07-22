@@ -1,0 +1,42 @@
+info:
+  name: Hello (GET)
+  type: http
+  seq: 1
+  tags:
+    - Order Service
+
+http:
+  method: GET
+  url: "{{baseUrl}}/orders/hello"
+  headers:
+    - name: Authorization
+      value: Bearer {{JWT}}
+
+runtime:
+  variables:
+    - name: baseUrl
+      value: http://localhost:8080
+    - name: JWT
+      value: eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCJ9.eyJzdWIiOiAiYWJoaXNlayIsICJyb2xlIjogIlJPTEVfQURNSU4iLCAiaWF0IjogMTc4NDczMjQzMCwgImV4cCI6IDE3ODQ3MzYwMzB9.DukPjfrAmUZAGIDpi_sH4FIccMMKAZeDxhQTR4kdDbU
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: OK
+    request:
+      url: "{{baseUrl}}/orders/hello"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: text/plain
+      body:
+        type: text
+        data: Hello from Order Service
