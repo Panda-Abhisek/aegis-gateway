@@ -1,6 +1,7 @@
 package com.aegis.security;
 
 import io.jsonwebtoken.Claims;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Component
 @Primary
+@Qualifier("jwtAuthenticationManager")
 public class JwtAuthenticationManager implements ReactiveAuthenticationManager {
 
     private final JwtService jwtService;

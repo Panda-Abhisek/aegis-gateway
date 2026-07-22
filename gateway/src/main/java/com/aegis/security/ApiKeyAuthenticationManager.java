@@ -1,5 +1,6 @@
 package com.aegis.security;
 
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -11,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Component
+@Qualifier("apiKeyAuthenticationManager")
 public class ApiKeyAuthenticationManager implements ReactiveAuthenticationManager {
 
     private final ApiKeyProperties apiKeyProperties;
