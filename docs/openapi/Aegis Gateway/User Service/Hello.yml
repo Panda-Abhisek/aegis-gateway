@@ -1,0 +1,37 @@
+info:
+  name: Hello
+  type: http
+  seq: 1
+  tags:
+    - User Service
+
+http:
+  method: GET
+  url: "{{baseUrl}}/users/hello"
+  auth:
+    type: apikey
+    key: X-API-Key
+    value: user-key
+    placement: header
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: OK
+    request:
+      url: "{{baseUrl}}/users/hello"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: text/plain
+      body:
+        type: text
+        data: Hello from User Service

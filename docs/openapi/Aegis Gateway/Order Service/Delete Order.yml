@@ -1,0 +1,47 @@
+info:
+  name: Delete Order
+  type: http
+  seq: 6
+  tags:
+    - Order Service
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/orders/:id"
+  headers:
+    - name: X-API-Key
+      value: user-key
+  params:
+    - name: id
+      value: "12"
+      type: path
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Deleted
+    request:
+      url: "{{baseUrl}}/orders/:id"
+      method: DELETE
+      params:
+        - name: id
+          value: ""
+          type: path
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "",
+            "message": ""
+          }

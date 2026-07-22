@@ -1,0 +1,376 @@
+openapi: 3.0.3
+info:
+  title: Aegis Gateway
+  description: API Gateway for User and Order microservices
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local
+
+paths:
+  # ── User Service ──
+
+  /users/hello:
+    get:
+      summary: Hello
+      tags: [User Service]
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Hello from User Service
+
+  /users:
+    get:
+      summary: Get All Users
+      tags: [User Service]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/User"
+    post:
+      summary: Create User
+      tags: [User Service]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+
+  /users/{id}:
+    get:
+      summary: Get User by ID
+      tags: [User Service]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    put:
+      summary: Update User
+      tags: [User Service]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                tier:
+                  type: string
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+    delete:
+      summary: Delete User
+      tags: [User Service]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+
+  /users/strip-test:
+    get:
+      summary: Strip Test
+      tags: [User Service]
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: User endpoint reached via StripPrefix
+
+  # ── Order Service ──
+
+  /orders/hello:
+    get:
+      summary: Hello
+      tags: [Order Service]
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Hello from Order Service
+
+  /orders:
+    get:
+      summary: Get All Orders
+      tags: [Order Service]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Order"
+    post:
+      summary: Create Order
+      tags: [Order Service]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                product:
+                  type: string
+                amount:
+                  type: number
+      responses:
+        "200":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+
+  /orders/{id}:
+    get:
+      summary: Get Order by ID
+      tags: [Order Service]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+    put:
+      summary: Update Order
+      tags: [Order Service]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                userId:
+                  type: string
+                product:
+                  type: string
+                amount:
+                  type: number
+                status:
+                  type: string
+      responses:
+        "200":
+          description: Updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Order"
+    delete:
+      summary: Delete Order
+      tags: [Order Service]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                  message:
+                    type: string
+
+  /orders/strip-test:
+    get:
+      summary: Strip Test
+      tags: [Order Service]
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Order endpoint reached via StripPrefix
+
+  # ── Actuator ──
+
+  /actuator/health:
+    get:
+      summary: Health Check
+      tags: [Actuator]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: UP
+
+  /actuator/info:
+    get:
+      summary: Application Info
+      tags: [Actuator]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  app:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      version:
+                        type: string
+
+  # ── StripPrefix Demo ──
+
+  /api/users/strip-test:
+    get:
+      summary: User via StripPrefix
+      tags: [StripPrefix Demo]
+      description: Gateway strips /api via StripPrefix=1 and forwards /users/strip-test to user service
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: User endpoint reached via StripPrefix
+
+  /api/orders/strip-test:
+    get:
+      summary: Order via StripPrefix
+      tags: [StripPrefix Demo]
+      description: Gateway strips /api via StripPrefix=1 and forwards /orders/strip-test to order service
+      responses:
+        "200":
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: Order endpoint reached via StripPrefix
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        tier:
+          type: string
+        message:
+          type: string
+
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        product:
+          type: string
+        amount:
+          type: number
+        status:
+          type: string
+        message:
+          type: string
